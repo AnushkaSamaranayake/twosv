@@ -1,35 +1,34 @@
 import { useEffect, useState } from "react";
-import { PhoneMultiFactorGenerator, getMultiFactorSession, multiFactor } from "firebase/auth";
+import { TotpMultiFactorGenerator, getMultiFactorResolver, multiFactor } from "firebase/auth";
 import { auth } from "../firebase";
 
 const TOTPEnroll = () => {
 
     const [qrCodeUrl, setQrCodeUrl] = useState("");
-    const [code, setCode] = useState("");
+    const [verificationCode, setverificationCode] = useState("");
+    const [totpEnrollmentId, setTotpEnrollmentId] = useState("");
 
     useEffect(() => {
-        const enroll = async () => {
+        const enrollTotp = async () => {
             const user = auth.currentUser;
-            const mfaSession = await getMultiFactorSession(user);
-            const totpFactor = new multiFactor(user).getSession().enrollments.find(e => e.factorId === "totp");
-            if (!totpFactor) {
-                const { totpEnrollment } = await multiFactor(user).enroll(
-                    PhoneMultiFactorGenerator.assertion({ code }),
-                    "My TOTP Auth"
-                );
-                setQrCodeUrl(totpEnrollment.qrCodeUrl);
-            }
+            const mfaSession = await multiFactorS(user).getSession();
+            
+            const totpSecret = await TotpMultiFactorGenerator.generateSecret(mfaSession);
+            setTotpEnrollmentId(totpSecret.enrollmentId);
+            setQrCodeUrl(totpSecret.qrCodeUrl);
         };
-        enroll();
+        enrollTotp();
     }, []);
 
     const handleVerify = async () => {
         try {
             const user  = auth.currentUser;
-            await multiFactor(user).enroll(
-                PhoneMultiFactorGenerator.assertion({ code }),
-                "My TOTP Auth"
+            const assertion = TotpMultiFactorGenerator.assertionForEnrollment(
+                totpEnrollmentId,
+                verificationCode
             );
+
+            await multiFactor(user).enroll(assertion, 'My TOTP Authenticator');
             alert("TOTP enrolled successfully!");
         }catch (error) {
             console.error("Error enrolling TOTP:", error);
@@ -41,7 +40,8 @@ const TOTPEnroll = () => {
         <div>
             <h2>Enroll TOTP</h2>
             {qrCodeUrl && <img src={qrCodeUrl} alt="TOTP QR Code" />}
-            <input placeholder="Enter code" value={code} onChange={(e) => setCode(e.target.value)} />
+            <p>Scan the QR code in your Authenticator app, then enter the generated code below:</p>
+            <input placeholder="Enter code" value={verificationCode} onChange={(e) => setverificationCode(e.target.value)} />
             <button onClick={handleVerify}>Verify</button>
         </div>
     )
