@@ -11,7 +11,7 @@ const TOTPEnroll = () => {
     useEffect(() => {
         const enrollTotp = async () => {
             const user = auth.currentUser;
-            const mfaSession = await multiFactorS(user).getSession();
+            const mfaSession = await multiFactor(user).getSession();
             
             const totpSecret = await TotpMultiFactorGenerator.generateSecret(mfaSession);
             setTotpEnrollmentId(totpSecret.enrollmentId);
@@ -37,12 +37,12 @@ const TOTPEnroll = () => {
     };
 
     return (
-        <div>
-            <h2>Enroll TOTP</h2>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+            <h2 className="className='text-center mb-6'" >Enroll TOTP</h2>
             {qrCodeUrl && <img src={qrCodeUrl} alt="TOTP QR Code" />}
             <p>Scan the QR code in your Authenticator app, then enter the generated code below:</p>
-            <input placeholder="Enter code" value={verificationCode} onChange={(e) => setverificationCode(e.target.value)} />
-            <button onClick={handleVerify}>Verify</button>
+            <input className="className='border px-2 mt-3 rounded-lg'" placeholder="Enter code" value={verificationCode} onChange={(e) => setverificationCode(e.target.value)} />
+            <button className='border p-2 mt-3 rounded-lg' onClick={handleVerify}>Verify</button>
         </div>
     )
 }

@@ -26,11 +26,11 @@ const Login = () => {
     }
 
     return (
-        <div>
-            <h2>Log In</h2>
-            <input type="email" placeholder='Email' onChange={e => setEmail(e.target.value)}/>
-            <input type="password" placeholder='Password' onChange={e => setPassword(e.target.value)}/>
-            <button onClick={handleSignIn}>Sign In</button>
+        <div className='min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4'>
+            <h2 className='text-center mb-6'>Log In</h2>
+            <input className='px-2 mt-3 mb-3 border rounded-lg' type="email" placeholder='Email' onChange={e => setEmail(e.target.value)}/>
+            <input className='px-2 mt-3 mb-3 border rounded-lg' type="password" placeholder='Password' onChange={e => setPassword(e.target.value)}/>
+            <button className='border p-2 mt-3 rounded-lg' onClick={handleLogin}>Login</button>
         </div>
     )
 }

@@ -13,11 +13,6 @@ const Signup = () => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [otp, setOtp] = useState('')
-    const [otpSent, setOtpSent] = useState(false)
-    const [error, setError] = useState(null)
-    const [signedUp, setSignedUp] = useState(false)
-    const [totpSecret, setTotpSecret] = useState(null)
 
     const handleSignUp = async (e) => {
         e.preventDefault();
@@ -27,7 +22,6 @@ const Signup = () => {
 
             await sendEmailVerification(user);
             alert("Verification Email sent. Please Verify the Email.");
-            setSignedUp(true);
 
             auth.signOut();
         } catch (error) {
@@ -49,11 +43,11 @@ const Signup = () => {
     // };
 
     return (
-        <div>
-            <h2>SignUp</h2>
-            <input type="email" placeholder='Email' onChange={e => setEmail(e.target.value)}/>
-            <input type="password" placeholder='Password' onChange={e => setPassword(e.target.value)}/>
-            <button onClick={handleSignUp}>Sign Up</button>
+        <div className='min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4'>
+            <h2 className='text-center mb-6'>SignUp</h2>
+            <input className='px-2 mt-3 mb-3 border rounded-lg' type="email" placeholder='Email' onChange={e => setEmail(e.target.value)}/>
+            <input className='px-2 mt-3 mb-3 border rounded-lg' type="password" placeholder='Password' onChange={e => setPassword(e.target.value)}/>
+            <button className='border p-2 mt-3 rounded-lg' onClick={handleSignUp}>Sign Up</button>
 
             {/* <hr />
 
